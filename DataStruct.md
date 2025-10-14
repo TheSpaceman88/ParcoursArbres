@@ -1,5 +1,3 @@
-Voici ton texte mis en forme en **Markdown (.md)** :
-
 ````markdown
 # Base propre et flexible pour un graphe en Python
 
