@@ -31,25 +31,64 @@ def build_france_graph(undirected: bool = True) -> Graph:
     return g
 
 if __name__ == "__main__":
-    g_u = build_sample_graph(undirected=True)
+    g_u = build_france_graph(undirected=True)
 
-    print("BFS Rennes:", bfs(g_u, "Rennes"))
-    print("DFS Rennes:", dfs(g_u, "Rennes"))
+    print("\n" + "="*40)
+    print("BFS (Parcours en largeur)")
+    print("="*40)
+    print("Départ : Rennes")
+    print("Ordre de visite :", bfs(g_u, "Rennes"))
 
+    print("\n" + "="*40)
+    print("DFS (Parcours en profondeur)")
+    print("="*40)
+    print("Départ : Rennes")
+    print("Ordre de visite :", dfs(g_u, "Rennes"))
+
+    print("\n" + "="*40)
+    print("Dijkstra (Plus court chemin pondéré)")
+    print("="*40)
     dist, prev = dijkstra(g_u, "Rennes")
-    print("Dijkstra dist:", dist)
-    print("Path Rennes->Lyon:", reconstruct_path(prev, "Rennes", "Lyon"))
+    print("Distances depuis Rennes :")
+    for k, v in dist.items():
+        print(f"  {k:<10} → {v}")
+    path = reconstruct_path(prev, "Rennes", "Lyon")
+    print("\nChemin Rennes → Lyon :", " → ".join(path))
 
+    print("\n" + "="*40)
+    print("Bellman-Ford (Chemins pondérés / négatifs)")
+    print("="*40)
     dist_bf, neg = bellman_ford(g_u, "Rennes")
-    print("Bellman-Ford dist:", dist_bf, "neg_cycle:", neg)
+    for k, v in dist_bf.items():
+        print(f"  {k:<10} → {v}")
+    print(f"\nCycle négatif détecté : {'Oui' if neg else 'Non'}")
 
+    print("\n" + "="*40)
+    print("Kruskal (Arbre couvrant minimal)")
+    print("="*40)
     cost_k, mst_k = kruskal_mst(g_u)
-    print("Kruskal cost:", cost_k, "edges:", mst_k)
+    print(f"Coût total : {cost_k}")
+    print("Arêtes sélectionnées :")
+    for e in mst_k:
+        print(f"  {e.u} - {e.v} ({e.w})")
 
+    print("\n" + "="*40)
+    print("Prim (Arbre couvrant minimal)")
+    print("="*40)
     cost_p, mst_p = prim_mst(g_u, "Rennes")
-    print("Prim cost:", cost_p, "edges:", mst_p)
+    print(f"Coût total : {cost_p}")
+    print("Arêtes sélectionnées :")
+    for e in mst_p:
+        print(f"  {e.u} - {e.v} ({e.w})")
 
+    print("\n" + "="*40)
+    print("Floyd-Warshall (Tous les plus courts chemins)")
+    print("="*40)
     nodes, D = floyd_warshall(g_u)
-    print("FW nodes:", nodes)
+    print("Matrice des distances :\n")
+    header = "      " + "  ".join(f"{n:>8}" for n in nodes)
+    print(header)
     for i, row in enumerate(D):
-        print(nodes[i], row)
+        line = f"{nodes[i]:>6} " + " ".join(f"{d:8.1f}" if d != float('inf') else "     ∞" for d in row)
+        print(line)
+
